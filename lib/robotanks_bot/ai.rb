@@ -1,4 +1,4 @@
-class RobotanksBot::Io
+class RobotanksBot::AI
 
   def initialize(connect)
     @connent = connect
