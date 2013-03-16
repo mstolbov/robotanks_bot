@@ -32,8 +32,13 @@ module RobotanksBot
 
     def process_ai
       move(1) unless @moving
-      turn_angle(180000000) unless @turning
-      fire if rand(10) == 2
+      #turn_angle(180000000) unless @turning
+      if rand(10) == 2
+        c = 180000000
+        c = rand(10) == 7 ? 180000000 : -180000000
+        turn_angle(c)
+        fire
+      end
     end
 
     def turn_angle(angle)
