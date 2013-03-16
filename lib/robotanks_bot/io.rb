@@ -2,7 +2,7 @@ class RobotanksBot::Io
 
   def initialize(connect)
     @connent = connect
-    send("bot")
+    send({role: "bot"})
   end
 
   def send(msg)
