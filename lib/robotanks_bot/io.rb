@@ -6,10 +6,9 @@ class RobotanksBot::Io
   end
 
   def send(msg)
-    @connect.send msg
+    json_msg = MultiJson.dump msg
+    @connect.send json_msg
     resp = @connect.respond
-    #MultiJson.load resp, symbolize_keys: true
-  #rescue MultiJson::DecodeError
-    #resp
+    MultiJson.load resp, symbolize_keys: true
   end
 end
