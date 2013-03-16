@@ -10,15 +10,19 @@ class RobotanksBot::ClientWriter
     async.wait_for_my_messages
   end
 
+  def logger
+    RobotanksBot.logger
+  end
+
   def write msg
-    p "write to server: #{msg}"
+    logger.info "write to server: #{msg}"
     @socket.write(msg)
   end
 
   def wait_for_my_messages
     loop do
       message = receive do |msg|
-        p msg
+        #logger.info msg
         socket.write msg
       end
     end

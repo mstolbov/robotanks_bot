@@ -4,7 +4,7 @@ module RobotanksBot
     attr_accessor :writer, :reader
 
     def initialize(socket)
-      @my_id = nil
+      @me = nil
       @socket = socket
       async.wait_for_my_messages
 
@@ -12,15 +12,18 @@ module RobotanksBot
       @moving = false
     end
 
+    def logger
+      RobotanksBot.logger
+    end
+
     def run
-      "bots runned"
+      logger.info "bots runned"
       writer.write "{\"role\":\"bot\"}\n"
       next_tick
     end
 
     def next_tick
-      puts "tick"
-      puts "me alive #{@me}" if @me
+      logger.info "tick"
       after(0.1) do
         process_ai
         next_tick
@@ -30,6 +33,7 @@ module RobotanksBot
     def process_ai
       move(1) unless @moving
       turn_angle(180000000) unless @turning
+      fire if rand(10) == 2
     end
 
     def turn_angle(angle)
@@ -42,6 +46,10 @@ module RobotanksBot
       @moving = true
     end
 
+    def fire
+      send_to_server({:fire => true})
+    end
+
     def send_to_server(value)
       writer.write(MultiJson.dump(value) + "\n")
     end
@@ -49,7 +57,7 @@ module RobotanksBot
     def wait_for_my_messages
       loop do
         message = receive do |msg|
-          puts msg
+          logger.info "receive message #{msg}"
           params = MultiJson.load(msg, :symbolize_keys => true)
           handle params
         end
@@ -64,7 +72,7 @@ module RobotanksBot
 
     #{"you":{"id":1}}}
     def you(value)
-      @my_id = value[:id]
+      @me = value
     end
 
     def map(value)
@@ -79,6 +87,9 @@ module RobotanksBot
 
     def add_bot(value)
       #@bots[value[:id]] = Bot.new(value) unless @bots[value[:id]]
+    end
+
+    def bullets(value)
     end
 
   end

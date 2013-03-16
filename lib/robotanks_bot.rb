@@ -2,6 +2,7 @@ require "robotanks_bot/version"
 require 'celluloid'
 require 'celluloid/io'
 require 'multi_json'
+require 'logging'
 
 module RobotanksBot
   autoload :ClientReader, 'robotanks_bot/client_reader'
@@ -20,5 +21,9 @@ module RobotanksBot
     bot.reader = ClientReader.new socket, bot
     bot.writer = ClientWriter.new socket, bot
     bot.run
+  end
+
+  def self.logger
+    @logger ||= Logging.logger(STDOUT)
   end
 end
