@@ -5,6 +5,9 @@ require 'multi_json'
 require 'logging'
 
 module RobotanksBot
+  HOST = "192.168.30.188"
+  PORT = 4444
+
   autoload :ClientReader, 'robotanks_bot/client_reader'
   autoload :ClientWriter, 'robotanks_bot/client_writer'
   autoload :AI, 'robotanks_bot/ai'
@@ -13,14 +16,16 @@ module RobotanksBot
   autoload :Map, 'robotanks_bot/map'
 
   def self.run
-    host = "192.168.30.188"
-    port = 4444
+    @socket = Connect.connect HOST, PORT
+    @bot = Bot.new @socket
+    @bot.reader = ClientReader.new @socket, @bot
+    @bot.writer = ClientWriter.new @socket, @bot
+    @bot.run
+  end
 
-    socket = Connect.connect host, port
-    bot = Bot.new socket
-    bot.reader = ClientReader.new socket, bot
-    bot.writer = ClientWriter.new socket, bot
-    bot.run
+  def self.restart
+    @socket.close
+    self.run
   end
 
   def self.logger

@@ -6,6 +6,7 @@ module RobotanksBot
     def initialize(socket)
       @me = nil
       @socket = socket
+      @bots = nil
       async.wait_for_my_messages
 
       @turning = false
@@ -19,6 +20,7 @@ module RobotanksBot
     def run
       logger.info "bots runned"
       writer.write "{\"role\":\"bot\"}\n"
+      writer.write "{\"name\":\"Sosiska\"}\n"
       next_tick
     end
 
@@ -32,13 +34,15 @@ module RobotanksBot
 
     def process_ai
       move(1) unless @moving
-      #turn_angle(180000000) unless @turning
       if rand(10) == 2
-        c = 180000000
-        c = rand(10) == 7 ? 180000000 : -180000000
-        turn_angle(c)
-        fire
+        turn_angle( rand(1024)-rand(2048) )
       end
+      #turn_angle(180000000) unless @turning
+      #if @bots
+        #b = @bots.select{|bs| bs[:id] != @my_id}.first
+        #turn_angle(b[:angle]+100)
+      #end
+      fire
     end
 
     def turn_angle(angle)
@@ -85,6 +89,7 @@ module RobotanksBot
     end
 
     def bots(value)
+      @bots = value
       #values.each do |value|
         #add_bot value
       #end
@@ -95,6 +100,10 @@ module RobotanksBot
     end
 
     def bullets(value)
+    end
+
+    def message(value)
+      RobotanksBot.restart
     end
 
   end
